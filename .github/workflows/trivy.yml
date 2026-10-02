@@ -36,3 +36,16 @@ jobs:
           severity: "CRITICAL"
           exit-code: "1"
           ignore-unfixed: true
+
+  test-critical:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Test de blocage sur image volontairement vulnérable
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: "vulnerables/web-dvwa:latest"
+          format: "table"
+          severity: "CRITICAL"
+          exit-code: "1"
+          ignore-unfixed: false
