@@ -1,0 +1,38 @@
+name: Trivy Security Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  trivy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Construction de l'image Docker
+        run: docker build -t tp-vuln-web:latest .
+
+      - name: Scan HIGH et CRITICAL
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: "tp-vuln-web:latest"
+          format: "table"
+          severity: "HIGH,CRITICAL"
+          exit-code: "0"
+          ignore-unfixed: true
+
+      - name: Blocage si vulnérabilité CRITICAL
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: "tp-vuln-web:latest"
+          format: "table"
+          severity: "CRITICAL"
+          exit-code: "1"
+          ignore-unfixed: true
